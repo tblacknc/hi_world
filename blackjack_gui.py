@@ -2,25 +2,20 @@ from tkinter import *
 from tkinter.messagebox import showinfo, askyesno
 from PIL import ImageTk, Image
 import random
-import time
 import inspect
 import sys
 
 class Cards:
     canv_ids = []
-
-    j = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    k = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    z = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    i = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    
+    #i = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    #x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     
     win = 0
     loose = 0 
     draw = 0
     blackjack = 0
-    my_score_id = 0
+    
     my_tally_id = 0
     dlr_score_id = 0
 
@@ -33,7 +28,12 @@ class Cards:
         self.hidden = 0    
         self.position = 0
         self.txt_posit = 0
-
+        
+        self.j = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.k = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.z = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.my_score_id = 0
     def getcardval(self):
         newcard = random.randint(0, 12)
         return newcard
@@ -81,18 +81,14 @@ class Cards:
         if self.score == 21:
             my_canvas.delete(dealer.hidden)
 
-            my_canvas.delete(Cards.dlr_score_id)
-            txt = "score: " + str(dealer.score)
-            Cards.dlr_score_id = my_canvas.create_text(200, 105, text=txt)
-            
+            self.draw_score()
+
             #gets the caller name
             caller_frame = sys._getframe(1)
             caller_name = inspect.getframeinfo(caller_frame)[3]
             caller_name = caller_name[0].strip().split('.')
 
-            #player.myClick()
-            #player.myClick()
-
+            #print("in bust", caller_frame)
             again = askyesno("canvas", caller_name[0] + " got 21 want to play again?")
             if caller_name[0] == "player":
                 Cards.win += 1
@@ -101,25 +97,43 @@ class Cards:
                 Cards.loose += 1
             
             if again:
-                dealer.clear_cards()
-                player.reset()
-                dealer.reset()
-                dealer.start()
+                self.my_restart()
             else:
                 root.quit()
         else:
             return 0
 
-    def check_score(self):
-        if self.score > 21:
+    def my_restart(self):
+        dealer.clear_cards()
+        player.reset()
+        dealer.reset()
+        dealer.start()
 
-            again = askyesno("canvas", "YOU BUSTED want to play again?")
-            Cards.loose += 1
+    def check_bust(self):
+        if self.score > 21:
+            #gets the caller name
+            caller_frame = sys._getframe(1)
+            caller_name = inspect.getframeinfo(caller_frame)[3]
+            caller_name = caller_name[0].strip().split('.')
+            #txt.replace("bananas", "apples")
+            caller_name = caller_name[0].replace("if not ", "")
+            caller_name = caller_name.strip()
+            #again = askyesno("canvas",caller_name[0] + " BUSTED want to play again?")
+            again = askyesno("canvas", caller_name + " BUSTED want to play again?")
+
+            x = caller_name.rfind("dealer")
+            if caller_name.rfind("dealer") >= 0:
+                Cards.win += 1
+                print("win ->",caller_name+"<-")
+
+            else:
+                print("loose ->",caller_name+"<-")
+                Cards.loose += 1
+                
+            #self.restart()
             if again:
-                dealer.clear_cards()
-                player.reset()
-                dealer.reset()
-                dealer.start()
+                self.my_restart()
+                return True
             else:
                 root.quit()
         
@@ -136,107 +150,109 @@ class Cards:
 
     def start(self, hide=False):
         #print("------------------------------")
-        player.myClick()
-        dealer.youClick()
-        player.myClick()
-        dealer.youClick(hide=True, ace=False)
+        player.my_click()
+        dealer.my_click()
+        player.my_click()
+        dealer.my_click(hide=True, ace=False)
+        player.check_bust()
+        dealer.check_bust()
         player.check21()
         dealer.check21()
 
-        
-    def youClick(self, hide=False, ace=False):
+    def add_card(self, ace=False):
+
+        player.crd = 200
+        dealer.crd = 10
 
         card = self.pickcard(ace=ace)
 
         self.times += 1
-        # resizing image using an array to show all  cards 
+        # resizing image using an array to show all  cards
         img = "extra\\" + card + ".png"
-        Cards.j[self.times] = Image.open(img)
-        resized = Cards.j[self.times].resize((60, 75), Image.ANTIALIAS)
-        Cards.y[self.times] = ImageTk.PhotoImage(resized)
+        self.j[self.times] = Image.open(img)
+        resized = self.j[self.times].resize((60, 75), Image.ANTIALIAS)
+        self.y[self.times] = ImageTk.PhotoImage(resized)
         horr = 80 + (self.times * 20)
-        my_image = my_canvas.create_image(horr, 10, anchor=NW,
-                                          image=Cards.y[self.times])
+        my_image = my_canvas.create_image(horr, self.crd, anchor=NW,
+                                          image=self.y[self.times])
         Cards.canv_ids.append(my_image)
+
+
+    def my_click(self, hide=False, ace=False):
+        #print("============================================")
+        caller_frame = sys._getframe(1)
+        #print("in my_click - 1 ", caller_frame)
+        
+        self.add_card(ace=ace)
 
         if hide:
 
             img = "extra\\purple_back.png"
-            Cards.k[self.times] = Image.open(img)
-            resized = Cards.k[self.times].resize((60, 75), Image.ANTIALIAS)
-            Cards.z[self.times] = ImageTk.PhotoImage(resized)
+            self.k[self.times] = Image.open(img)
+            resized = self.k[self.times].resize((60, 75), Image.ANTIALIAS)
+            self.z[self.times] = ImageTk.PhotoImage(resized)
             horr = 80 + (self.times * 20)
-            my_image = my_canvas.create_image(horr, 10, anchor=NW,
-                                              image=Cards.z[self.times])
+            my_image = my_canvas.create_image(horr, self.crd, anchor=NW,
+                                              image=self.z[self.times])
             self.hidden = my_image
         else:
-            my_canvas.delete(Cards.dlr_score_id)
-            txt = "score: " + str(self.score)
-            Cards.dlr_score_id = my_canvas.create_text(150, 95, text=txt)
+            
+            self.draw_score()
 
-    def myClick(self, ace=False):
-        
-        #gets the caller name
-        caller_frame = sys._getframe(2)
-        caller_name = inspect.getframeinfo(caller_frame)[3]
-        caller_name = caller_name[0].strip().split('.')
-        #print("myClick - ", caller_frame)
-        
-        
-        card = self.pickcard(ace=ace)
-        self.times += 1
+        self.draw_wld()
 
-        # resizing image using an array to show all  cards 
-        img = "extra\\" + card + ".png"
-        Cards.i[self.times] = Image.open(img)
-        resized = Cards.i[self.times].resize((60, 75), Image.ANTIALIAS)
-        Cards.x[self.times] = ImageTk.PhotoImage(resized)
-        horr = 80 + (self.times * 20)
-        my_image = my_canvas.create_image(horr, 200, anchor=NW, image=Cards.x[self.times])
-        Cards.canv_ids.append(my_image)
+    def click(self):
+        player.my_click()
+        player.check_bust()
 
+    def draw_score(self):
+
+        player.scr = 285
+        dealer.scr = 95
+        
         # delete previous text then print the new score
-        my_canvas.delete(Cards.my_score_id)
+        my_canvas.delete(self.my_score_id)
         txt = "score: " + str(self.score)
-        Cards.my_score_id = my_canvas.create_text(150, 285, text=txt)
-        
-        my_canvas.delete(Cards.my_tally_id)
-        txt = "  Win: " + str(Cards.win)+ \
-              "  Loose: "+ str(Cards.loose)+ \
-              "  Draw: "+  str(Cards.draw)+ \
-              "  Blackjack: "+  str(Cards.blackjack)
-        Cards.my_tally_id = my_canvas.create_text(150, 145, text=txt)
-        
-        self.check_score()
+        self.my_score_id = my_canvas.create_text(150, self.scr, text=txt)
 
-    def stay(self):
+    def draw_wld(self):
+        # draw win loose draw
+        my_canvas.delete(Cards.my_tally_id)
+        txt = "  Win: " + str(Cards.win) + \
+              "  Loose: " + str(Cards.loose) + \
+              "  Draw: " + str(Cards.draw) + \
+              "  Blackjack: " + str(Cards.blackjack)
+        Cards.my_tally_id = my_canvas.create_text(150, 145, text=txt)
+
+    def dlr_stay(self):
 
         caller_frame = sys._getframe(2)
         caller_name = inspect.getframeinfo(caller_frame)[3]
         caller_name = caller_name[0].strip().split('.')
+        
+        #print("--------------------------------------")
         #print("in stay - ", caller_frame)
+        #print("--------------------------------------")
 
         my_canvas.delete(dealer.hidden)
-        my_canvas.delete(Cards.dlr_score_id)
-        txt = "score: " + str(dealer.score)
-        Cards.dlr_score_id = my_canvas.create_text(150, 95, text=txt)
+        dealer.draw_score()
 
+        
         while dealer.score <= 16:
-            dealer.youClick()
-        who = whowon()
-        again = askyesno("canvas", who + " want to play again?")
-        if again:
-            dealer.clear_cards()
-            player.reset()
-            dealer.reset()
-            dealer.start()
-            
-        else:
-            root.quit()
+            dealer.my_click()
+
+        if not dealer.check_bust():
+            self.draw_score()
+            who = whowon()
+            again = askyesno("canvas", who + " want to play again?")
+            if again:
+                self.my_restart()
+            else:
+                root.quit()
 
 def whowon():
     
-    if dealer.score > 21:
+    if dealer.score > 21:    #ojoiooo
         Cards.win += 1
         return "You won! "
         
@@ -262,16 +278,19 @@ def set_up():
     my_canvas = Canvas(root, width=w, height=h, bg="white")
     my_canvas.pack(pady=20)
 
-    player.myClick()
-    dealer.youClick()
-    player.myClick()
-    dealer.youClick(hide=True)
+    player.my_click()
+    dealer.my_click()
+    player.my_click()
+    player.check_bust()
+    #player.mymy_click()
+    dealer.my_click(hide=True)
+    dealer.check_bust()
        
-    mybutton = Button(root, text="hit me", command=player.myClick)
+    mybutton = Button(root, text="hit me", command=player.click)
     mybutton.place(x=25, y=0)
     mybutton.pack()
 
-    mybutton1 = Button(root, text="stay", command=player.stay)
+    mybutton1 = Button(root, text="stay", command=player.dlr_stay)
     mybutton1.pack()
 
     player.check21()
