@@ -47,12 +47,11 @@ for (dirpath, dirnames, filenames) in walk(mypath):
                 print("dirAlbum ===== ", audiofile.tag.album)
                 print("*************************************************")           
             except:
-                error_dir += "tags " 
+                error_dir += "Error while writing __TAGS__" 
                 error_dir += str(titletag) 
                 error_dir += str(artist)
                 error_dir += str(albm)
                 error_dir += "--------------------------\n\n"
-                #error_dir += "tags____", str(artist), "____", str(albm)
                                 
                 print("title = ", titletag)
                 print("artist = ", artist)
@@ -64,7 +63,7 @@ for (dirpath, dirnames, filenames) in walk(mypath):
                 audiofile.tag.save()
             except:
                 print("COULDN'T SAVE audiofile.tag.save...... DRATS")
-                error_dir += "Files " 
+                error_dir += "Error while writing __FILE__" 
                 error_dir += str(titletag) 
                 error_dir += str(artist)
                 error_dir += str(albm)
