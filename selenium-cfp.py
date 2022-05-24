@@ -21,7 +21,43 @@ class TestStringMethods(unittest.TestCase):
         #self.driver.get("https://codeforphilly.org/")
         self.driver.get("http://10.0.0.69:9080/")
 
+    def test_menu(self):
+               
+        links = ["//*[@id='navbarResponsive']/ul/li[1]/div/a[1]", 
+                 "//*[@id='navbarResponsive']/ul/li[1]/div/a[2]", 
+                 "//*[@id='navbarResponsive']/ul/li[1]/div/a[3]",
+                 "//*[@id='navbarResponsive']/ul/li[1]/div/a[4]",
+                 "//*[@id='navbarResponsive']/ul/li[1]/div/a[5]"
+                 ]
+                 
+        url   = ["volunteer",
+                 "sponsor",
+                 "projects",
+                 "project_guidelines",
+                 "hackathons"
+                 ]
+        
+        loop = 0
+     
+        for link in links:
             
+            time.sleep(1)
+            lnk = self.driver.find_element(By.ID, "navbarDropdown1")
+            lnk.click()
+
+            time.sleep(1)
+            
+            select = self.driver.find_element(By.XPATH, link)
+            select.click()
+            time.sleep(1)
+            
+            if url[loop] not in self.driver.current_url:
+                string = url[loop]+" not found in url "+ str(loop + 1)
+                self.assertEqual(1, 0, string)
+            
+            self.driver.back()
+            loop += 1
+       
     def test_video(self):
     
         try:
@@ -29,8 +65,7 @@ class TestStringMethods(unittest.TestCase):
         except:
             vid = "video with englich subtitles not seen at url - "+ self.driver.current_url
             self.assertEqual(1, 0, "video with english subtitles not seen at url")
-    
-    
+        
     def test_modal(self):
     
         loop = 0 
