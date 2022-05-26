@@ -12,7 +12,6 @@ from webdriver_manager.firefox import GeckoDriverManager
 
 from selenium.webdriver.support.relative_locator import locate_with
 
-
 import time
 import unittest
 
@@ -36,6 +35,7 @@ class TestStringMethods(unittest.TestCase):
         
         #self.driver.get("https://codeforphilly.org/")
         self.driver.get("http://10.0.0.69:9080/")
+        
     def rtnFavIcon(self):
         
         #return by selecting the fav icon
@@ -47,160 +47,261 @@ class TestStringMethods(unittest.TestCase):
         for x in range(count):
             lnk = nxtLnk
             nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk)) 
-    
+            print("SWAP ---- ", x)
         return nxtLnk
         
     def checkTitle(self, url):
     
         if url not in self.driver.current_url:
+            print("                       FAIL                    ")
             string = url + " not found in url - " + self.driver.current_url
             self.assertEqual(1, 0, string)
+        
+    def switch_tabs(self):
 
-    
+        #get window handle
+        currentWin = self.driver.current_window_handle
+
+        #get child window
+        handles = self.driver.window_handles
+
+        for nextWin in handles:
+            #switch focus to child window
+            if(nextWin != currentWin):
+                self.driver.switch_to.window(nextWin)
+                break
+        
     def test_menu2(self):
     
-        lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
-        lnk.click()
-        time.sleep(2)
-
-        nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk))
-        webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()
-        
-        self.checkTitle(MainPageLocators.MENU_TWO_TITLES[0])
-        
-        time.sleep(1)
-        self.rtnFavIcon()
-        
-        lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
-        lnk.click()
-        time.sleep(2)
-
-        nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk))
-        
-        nxtLnk = self.lnkSwap(nxtLnk, 1)
-        webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()
-
-        time.sleep(1)
-        
-        self.checkTitle(MainPageLocators.MENU_TWO_TITLES[1])
-        
-        self.rtnFavIcon()
-
-        lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
-        lnk.click()
-        time.sleep(2)
-        nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk))
-        
-        nxtLnk = self.lnkSwap(nxtLnk, 2)
-        
-        webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()
-
-        time.sleep(1)
-        
-        self.checkTitle(MainPageLocators.MENU_TWO_TITLES[2])
-        
-        self.rtnFavIcon()        
-        
-        lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
-        lnk.click()
-        time.sleep(2)
-        
-        nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk))
-        
-        nxtLnk = self.lnkSwap(nxtLnk, 3)
-        
-        webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()        
-        
-        time.sleep(2)
-        
-        self.checkTitle(MainPageLocators.MENU_TWO_TITLES[3])
-        
-        self.rtnFavIcon()
-        
-        time.sleep(2)
-        
-        lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
-        lnk.click()
-        time.sleep(2)
-
-        nxtLnk = self.lnkSwap(nxtLnk, 4)
-        
-        webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()        
-        time.sleep(2)
-        
-        self.checkTitle(MainPageLocators.MENU_TWO_TITLES[4])
-        
-        self.rtnFavIcon()
-        time.sleep(2)
+        print(
+        '''
+        =======================================
+        |           Test Menu 2               |
+        =======================================
+        '''
+        )
     
-    def test_menu(self):
-               
-        
-        loop = 0
-     
-        for link in MainPageLocators.MENU_ONE_LINKS:
+        # not the best way to do  it but wanted to play with below
+        lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
+        lnk.click()
+
+        for loop in range(MainPageLocators.MENU_TWO_LOOP):
+            print("loop =========== ",loop)
+            nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk))
             
-            time.sleep(2)
+            nxtLnk = self.lnkSwap(nxtLnk, loop)
+            webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()
+            
+            self.checkTitle(MainPageLocators.MENU_TWO_TITLES[loop])
+            
+            self.rtnFavIcon()
+
+            lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
+            lnk.click()
+            
+        print("                       PASS                    ")
+        
+    def test_menu1b(self):
+    
+        print(
+        '''
+        =======================================
+        |           Test Menu 1               |
+        =======================================
+        '''
+        )
+
+
+        lnk = self.driver.find_element(*MainPageLocators.MENU_ONE_TOP)
+        lnk.click()
+
+        for loop in range(MainPageLocators.MENU_ONE_LOOP):
+            print("loop =========== ",loop)
+            nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk))
+            
+            nxtLnk = self.lnkSwap(nxtLnk, loop)
+            webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()
+            
+            self.checkTitle(MainPageLocators.MENU_ONE_TITLES[loop])
+            
+            self.rtnFavIcon()
+
             lnk = self.driver.find_element(*MainPageLocators.MENU_ONE_TOP)
             lnk.click()
+            
+        print("                       PASS                    ")
 
-            time.sleep(1)
-            
-            select = self.driver.find_element(By.XPATH, link)
-            select.click()
-            time.sleep(1)
-            
-            self.checkTitle(MainPageLocators.MENU_ONE_SEARCH[loop])            
-            self.rtnFavIcon()
-            
-            loop += 1
-            
-    def test_video(self):
+ 
+    def test_search(self):
+
+        print(
+        '''
+        =======================================
+        |           Test search               |
+        =======================================
+        '''
+        )
     
+        link = self.driver.find_element(*MainPageLocators.SEARCH_BOX)
+        webdriver.ActionChains(self.driver).move_to_element(link).click().perform()
+        
+        webdriver.ActionChains(self.driver).send_keys(*MainPageLocators.SEARCH).perform()
+        link = self.driver.find_element(*MainPageLocators.SEARCH_TOP)
+        
+        webdriver.ActionChains(self.driver).move_to_element(link).click().perform()
+        
+        self.checkTitle(MainPageLocators.SEARCH_FIRST_RESULT)
+        self.rtnFavIcon()
+        
+        link = self.driver.find_element(*MainPageLocators.SEARCH_BOX)
+        webdriver.ActionChains(self.driver).move_to_element(link).click().perform()
+        
+        webdriver.ActionChains(self.driver).send_keys(*MainPageLocators.SEARCH).perform()
+        link = self.driver.find_element(*MainPageLocators.SEARCH_SECOND)
+        
+        webdriver.ActionChains(self.driver).move_to_element(link).click().perform()
+        
+        self.checkTitle(MainPageLocators.SEARCH_SECOND_RESULT)
+        self.rtnFavIcon()        
+        
+        print("                       PASS                    ")
+        
+    def test_good_login(self):
+
+        print(
+        '''
+        =======================================
+        |         Test good login             |
+        =======================================
+        '''
+        )
+        link = self.driver.find_element(By.ID, "navbarDropdown4")
+        link.click()
+
+        self.driver.find_element(*MainPageLocators.LOGIN_USER).send_keys(*MainPageLocators.USER)
+        self.driver.find_element(*MainPageLocators.LOGIN_PASS).send_keys(*MainPageLocators.PASS)
+
+        enter = self.driver.find_element(*MainPageLocators.LOGIN_BUTTON)
+        enter.click()
+        
+        txt = self.driver.find_element(*MainPageLocators.LOGIN_TXT)
+        
+        if txt.text != MainPageLocators.USER_NAME:
+            print("                       FAIL                    ")
+            self.assertEqual(1, 0, "Test failed to login")
+        
+        print("                       PASS                    ")
+        
+    def test_bad_login(self):
+
+        print(
+        '''
+        =======================================
+        |         Test bad login              |
+        =======================================
+        '''
+        )
+        
+        link = self.driver.find_element(By.ID, "navbarDropdown4")
+        link.click()
+
+        self.driver.find_element(*MainPageLocators.LOGIN_USER).send_keys(*MainPageLocators.USER)
+        self.driver.find_element(*MainPageLocators.LOGIN_PASS).send_keys(*MainPageLocators.BAD_PASS)
+
+        enter = self.driver.find_element(*MainPageLocators.LOGIN_BUTTON)
+        enter.click()
+        
+        txt = self.driver.find_element(*MainPageLocators.BAD_TXT)
+        
+        if MainPageLocators.BAD_USER not in txt.text:
+            print("                       FAIL                    ")
+            self.assertEqual(1, 0, "Test failed to fail login")
+        
+        print("                       PASS                    ")        
+        
+    def test_video(self):
+        
+        print(
+        '''
+        =======================================
+        |           Test Video                |
+        =======================================
+        '''
+        )
+        
+        
+        
         try:
             titles = self.driver.find_element(*MainPageLocators.VIDEO_SUB)
         except:
+            print("                       FAIL                    ")
             self.assertEqual(1, 0, "video with english subtitles not seen at url")
+            
+        print("                       PASS                    ")
+
+    def test_volenteers(self):
+
+        print(
+        '''
+        =======================================
+        |         Test Volenteers             |
+        =======================================
+        '''
+        )
+        #playing with the volunteer link
+        link = self.driver.find_element(*MainPageLocators.VOLENTEER_LINK)
+        
+        link.click()
+        
+        self.checkTitle(*MainPageLocators.VOLENTEER_TITLES)
+
+        self.rtnFavIcon()
+        print("                       PASS                    ")
     
-    
+
     def test_modal(self):
     
+        print(
+        '''
+        =======================================
+        |           Test Modals               |
+        =======================================
+        '''
+        )
         loop = 0 
-        #links = self.driver.find_elements(By.CLASS_NAME, 'portfolio-link')
-        print("PORTFOLIO LINK --->",MainPageLocators.MODAL_LINK)
-
         
         for link in self.driver.find_elements(*MainPageLocators.MODAL_LINK):
             loop += 1
             try:
                 time.sleep(2)
                 link.click()
-                time.sleep(1)
+                time.sleep(3)
                 #return by sending an esc to the modal
                 webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
+                
             except:
+                print("                       FAIL                    ")
                 string = "failed to load modal number" + str(loop)
                 self.assertEqual(1, 0, string)
-        if loop != 6:
+        if loop != MainPageLocators.MODAL_COUNT:
+            print("                       FAIL                    ")
             string = "script only saw "+ str(loop) +" modals"
             self.assertEqual(1, 0, string)
+            
+        print("                       PASS                    ")
 
-    def test_volenteers(self):
-
-        #playing with the volunteer link
-        link = self.driver.find_element(By.CLASS_NAME, "main-volunteer-link")
-        
-        link.click()
-        
-        self.checkTitle(*MainPageLocators.VOLENTEER_TITLES)
-
-        time.sleep(1)
-        self.rtnFavIcon()
 
     def test_blog(self):    
+    
+        print(
+        '''
+        =======================================
+        |           Test Blogs                |
+        =======================================
+        '''
+        )
         loop = 0
         links=[]
-        #lnks = self.driver.find_elements(*MainPageLocators.BLOG_OBJ)
         
         for link in self.driver.find_elements(*MainPageLocators.BLOG_OBJ):
             links.append(link.get_attribute('href'))
@@ -208,18 +309,91 @@ class TestStringMethods(unittest.TestCase):
         for link in links:
             loop +=1
             try:                         
-                time.sleep(1)
                 self.driver.get(link)
-                time.sleep(1)
                     
                 self.rtnFavIcon()
             except:
                 string = "failed to load blog number"+ str(loop)
+                print("                       FAIL                    ")
                 self.assertEqual(1, 0, string)
         if loop != 4:
             string = "script only saw",loop,"blogs"
+            print("               FAIL                    ")
             self.assertEqual(1, 0, string)
             
+        print("                       PASS                    ")    
+        
+    def test_involved(self):
+    
+        print(
+        '''
+        =======================================
+        |      Test get involved Lnks         |
+        =======================================
+        '''
+        )
+    
+        for x in range(3):
+              
+            enter = self.driver.find_element(By.XPATH, MainPageLocators.INVOLVED_LINK[x])
+            
+            webdriver.ActionChains(self.driver).move_to_element(enter).click().perform()
+
+            if x == 1:
+                self.switch_tabs()
+                
+            self.checkTitle(MainPageLocators.INVOLVED_Title[x])
+
+            if x == 1:
+                self.switch_tabs()
+
+            self.rtnFavIcon()
+        print("                       PASS                    ")
+
+    def test_bottom(self):
+    
+        print(
+        '''
+        =======================================
+        |         Test Bottom Links           |
+        =======================================
+        '''
+        )
+    
+        for x in range(9):
+
+            enter = self.driver.find_element(By.LINK_TEXT, MainPageLocators.BOTTOM_LINK[x])
+            
+            webdriver.ActionChains(self.driver).move_to_element(enter).click().perform()
+                
+            self.checkTitle(MainPageLocators.BOTTOM_Title[x])
+
+            self.driver.back()
+            
+        print("                       PASS                    ")
+    
+    def test_bottom(self):
+        
+        print(
+        '''
+        =======================================
+        |         Test Social Links           |
+        =======================================
+        '''
+        )
+        
+        for x in range(5):
+              
+            enter = self.driver.find_element(By.XPATH, MainPageLocators.SOCIAL_LINK[x])
+            
+            webdriver.ActionChains(self.driver).move_to_element(enter).click().perform()
+                
+            self.checkTitle(MainPageLocators.SOCIAL_Title[x])
+
+            self.driver.back()
+        print("                       PASS                    ")
+    
+    
     def tearDown(self):
         
         self.driver.close()
