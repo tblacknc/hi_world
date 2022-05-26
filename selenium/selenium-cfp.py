@@ -24,13 +24,13 @@ class TestStringMethods(unittest.TestCase):
 
     def setUp(self):
     
-        #PATH = "C:\Program Files (x86)\chromedriver.exe"
+        PATH = "C:\Program Files (x86)\chromedriver.exe"
         #PATH = "C:\Users\tblac\Desktop\work search\amazon\selenium\drivers\chromedriver.exe"  
-        #self.driver = webdriver.Chrome(PATH)
+        self.driver = webdriver.Chrome(PATH)
         #self.driver = webdriver.Firefox(executable_path=r'C:\Program Files (x86)\geckodriver.exe')
 
     
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        #self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         #self.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
         
         #self.driver.get("https://codeforphilly.org/")
@@ -47,7 +47,6 @@ class TestStringMethods(unittest.TestCase):
         for x in range(count):
             lnk = nxtLnk
             nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk)) 
-            print("SWAP ---- ", x)
         return nxtLnk
         
     def checkTitle(self, url):
@@ -57,7 +56,7 @@ class TestStringMethods(unittest.TestCase):
             string = url + " not found in url - " + self.driver.current_url
             self.assertEqual(1, 0, string)
         
-    def switch_tabs(self):
+    def switchTabs(self):
 
         #get window handle
         currentWin = self.driver.current_window_handle
@@ -70,7 +69,20 @@ class TestStringMethods(unittest.TestCase):
             if(nextWin != currentWin):
                 self.driver.switch_to.window(nextWin)
                 break
+    
+    def login(self):
+    
+        link = self.driver.find_element(By.ID, "navbarDropdown4")
+        link.click()
+
+        self.driver.find_element(*MainPageLocators.LOGIN_USER).send_keys(*MainPageLocators.USER)
+        self.driver.find_element(*MainPageLocators.LOGIN_PASS).send_keys(*MainPageLocators.PASS)
+
+        enter = self.driver.find_element(*MainPageLocators.LOGIN_BUTTON)
+        enter.click()
         
+        txt = self.driver.find_element(*MainPageLocators.LOGIN_TXT)    
+    
     def test_menu2(self):
     
         print(
@@ -81,15 +93,22 @@ class TestStringMethods(unittest.TestCase):
         '''
         )
     
+        self.login()
         # not the best way to do  it but wanted to play with below
         lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
         lnk.click()
 
         for loop in range(MainPageLocators.MENU_TWO_LOOP):
-            print("loop =========== ",loop)
             nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk))
             
             nxtLnk = self.lnkSwap(nxtLnk, loop)
+            
+            if loop >= 2:
+                time.sleep(1)
+                nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).above(nxtLnk))
+                time.sleep(1)
+
+            
             webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()
             
             self.checkTitle(MainPageLocators.MENU_TWO_TITLES[loop])
@@ -101,7 +120,7 @@ class TestStringMethods(unittest.TestCase):
             
         print("                       PASS                    ")
         
-    def test_menu1b(self):
+    def tst_menu1(self):
     
         print(
         '''
@@ -111,15 +130,22 @@ class TestStringMethods(unittest.TestCase):
         '''
         )
 
-
+        self.login()
+        
         lnk = self.driver.find_element(*MainPageLocators.MENU_ONE_TOP)
         lnk.click()
+        time.sleep(1)
 
         for loop in range(MainPageLocators.MENU_ONE_LOOP):
-            print("loop =========== ",loop)
+
             nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).below(lnk))
             
             nxtLnk = self.lnkSwap(nxtLnk, loop)
+            if loop >= 2:
+                time.sleep(1)
+                nxtLnk = self.driver.find_element(locate_with(*MainPageLocators.TAG_A).above(nxtLnk))
+                time.sleep(1)
+            time.sleep(2)
             webdriver.ActionChains(self.driver).move_to_element(nxtLnk).click().perform()
             
             self.checkTitle(MainPageLocators.MENU_ONE_TITLES[loop])
@@ -132,7 +158,7 @@ class TestStringMethods(unittest.TestCase):
         print("                       PASS                    ")
 
  
-    def test_search(self):
+    def tst_search(self):
 
         print(
         '''
@@ -142,31 +168,35 @@ class TestStringMethods(unittest.TestCase):
         '''
         )
     
+        self.login()
+        time.sleep(1)
         link = self.driver.find_element(*MainPageLocators.SEARCH_BOX)
         webdriver.ActionChains(self.driver).move_to_element(link).click().perform()
-        
+        time.sleep(1)
         webdriver.ActionChains(self.driver).send_keys(*MainPageLocators.SEARCH).perform()
+        time.sleep(1)
         link = self.driver.find_element(*MainPageLocators.SEARCH_TOP)
         
         webdriver.ActionChains(self.driver).move_to_element(link).click().perform()
-        
+        time.sleep(1)
         self.checkTitle(MainPageLocators.SEARCH_FIRST_RESULT)
         self.rtnFavIcon()
         
         link = self.driver.find_element(*MainPageLocators.SEARCH_BOX)
         webdriver.ActionChains(self.driver).move_to_element(link).click().perform()
-        
+        time.sleep(1)
         webdriver.ActionChains(self.driver).send_keys(*MainPageLocators.SEARCH).perform()
+        time.sleep(1)
         link = self.driver.find_element(*MainPageLocators.SEARCH_SECOND)
         
         webdriver.ActionChains(self.driver).move_to_element(link).click().perform()
-        
+        time.sleep(1)
         self.checkTitle(MainPageLocators.SEARCH_SECOND_RESULT)
         self.rtnFavIcon()        
         
         print("                       PASS                    ")
         
-    def test_good_login(self):
+    def tst_good_login(self):
 
         print(
         '''
@@ -192,7 +222,7 @@ class TestStringMethods(unittest.TestCase):
         
         print("                       PASS                    ")
         
-    def test_bad_login(self):
+    def tst_bad_login(self):
 
         print(
         '''
@@ -219,7 +249,7 @@ class TestStringMethods(unittest.TestCase):
         
         print("                       PASS                    ")        
         
-    def test_video(self):
+    def tst_video(self):
         
         print(
         '''
@@ -229,7 +259,7 @@ class TestStringMethods(unittest.TestCase):
         '''
         )
         
-        
+        self.login()
         
         try:
             titles = self.driver.find_element(*MainPageLocators.VIDEO_SUB)
@@ -239,7 +269,7 @@ class TestStringMethods(unittest.TestCase):
             
         print("                       PASS                    ")
 
-    def test_volenteers(self):
+    def tst_volenteers(self):
 
         print(
         '''
@@ -248,6 +278,9 @@ class TestStringMethods(unittest.TestCase):
         =======================================
         '''
         )
+        
+        self.login()
+        
         #playing with the volunteer link
         link = self.driver.find_element(*MainPageLocators.VOLENTEER_LINK)
         
@@ -259,7 +292,7 @@ class TestStringMethods(unittest.TestCase):
         print("                       PASS                    ")
     
 
-    def test_modal(self):
+    def tst_modal(self):
     
         print(
         '''
@@ -268,6 +301,9 @@ class TestStringMethods(unittest.TestCase):
         =======================================
         '''
         )
+        
+        self.login()
+        
         loop = 0 
         
         for link in self.driver.find_elements(*MainPageLocators.MODAL_LINK):
@@ -291,7 +327,7 @@ class TestStringMethods(unittest.TestCase):
         print("                       PASS                    ")
 
 
-    def test_blog(self):    
+    def tst_blog(self):    
     
         print(
         '''
@@ -300,6 +336,9 @@ class TestStringMethods(unittest.TestCase):
         =======================================
         '''
         )
+        
+        self.login()
+        
         loop = 0
         links=[]
         
@@ -323,7 +362,7 @@ class TestStringMethods(unittest.TestCase):
             
         print("                       PASS                    ")    
         
-    def test_involved(self):
+    def tst_involved(self):
     
         print(
         '''
@@ -333,6 +372,8 @@ class TestStringMethods(unittest.TestCase):
         '''
         )
     
+        self.login()
+    
         for x in range(3):
               
             enter = self.driver.find_element(By.XPATH, MainPageLocators.INVOLVED_LINK[x])
@@ -340,17 +381,17 @@ class TestStringMethods(unittest.TestCase):
             webdriver.ActionChains(self.driver).move_to_element(enter).click().perform()
 
             if x == 1:
-                self.switch_tabs()
+                self.switchTabs()
                 
             self.checkTitle(MainPageLocators.INVOLVED_Title[x])
 
             if x == 1:
-                self.switch_tabs()
+                self.switchTabs()
 
             self.rtnFavIcon()
         print("                       PASS                    ")
 
-    def test_bottom(self):
+    def tst_bottom(self):
     
         print(
         '''
@@ -360,6 +401,8 @@ class TestStringMethods(unittest.TestCase):
         '''
         )
     
+        self.login()
+        
         for x in range(9):
 
             enter = self.driver.find_element(By.LINK_TEXT, MainPageLocators.BOTTOM_LINK[x])
@@ -372,7 +415,7 @@ class TestStringMethods(unittest.TestCase):
             
         print("                       PASS                    ")
     
-    def test_bottom(self):
+    def tst_social(self):
         
         print(
         '''
@@ -381,6 +424,8 @@ class TestStringMethods(unittest.TestCase):
         =======================================
         '''
         )
+        
+        self.login()
         
         for x in range(5):
               
