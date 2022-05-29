@@ -1,6 +1,8 @@
 import requests
 import json
 from numerize import numerize
+from datetime import datetime, timedelta
+
 
 def stockDate():
     url = "https://api.polygon.io/v1/open-close/"
@@ -9,8 +11,9 @@ def stockDate():
     date = input("Enter date:")
 
     if not ticker:
-        ticker = "CSCO"
-        date = "2020-10-14"
+        ticker = "csco"
+        d = datetime.now() - timedelta(days=1)
+        date = d.strftime("%Y-%m-%d")
         
     key = "s2_m3Ptpdhop0_1IHLI6OuRQiKUmxZBZ"
 
@@ -34,17 +37,24 @@ def stockDate():
         print(f"Low\t\t{userdata['low']}")
         print(f"After Hours\t{userdata['afterHours']}")
         print()
+  
         print(queryURL)
+        print()
+
     except:
-        print("An error occured")
+        print()
+        print("An error occured - 1")
+        print()
         print(queryURL)
         print(response.text)
-        
-def stockYesterday():
+        print()
+    return ticker
+
+def stockYesterday(ticker):
 
     url = "https://api.polygon.io/v2/aggs/ticker/"
     
-    ticker = "CSCO"
+    ticker = ticker
     key = "s2_m3Ptpdhop0_1IHLI6OuRQiKUmxZBZ"
 
     queryURL = url + f"{ticker}"
@@ -53,32 +63,45 @@ def stockYesterday():
      
     response = requests.get(queryURL)
     userdata = json.loads(response.text)
-    results = userdata["results"]
+    try:
+        results = userdata["results"]
 
-    prnVol = "Volume"
-    prnOpen = "Open"
-    prnClose = "Close"
-    prnHigh = "High"
-    prnLow = "Low"
 
-    for data in range(int(userdata['count'])):
-        vol = numerize.numerize(results[data]['v'])    
-        prnVol += f"\t{vol}"  
-        prnOpen += f"\t{results[data]['o']}"
-        prnClose += f"\t{results[data]['c']}"
-        prnHigh += f"\t{results[data]['h']}"
-        prnLow += f"\t{results[data]['l']}"
-   
-    print()
-    print("Yesterday")
-    print("-----------------------------")
-    print(prnVol)
-    print(prnOpen)
-    print(prnClose)
-    print(prnHigh)
-    print(prnLow)
-    print()
-    print(queryURL)
+        prnVol = "Volume"
+        prnOpen = "Open"
+        prnClose = "Close"
+        prnHigh = "High"
+        prnLow = "Low"
 
-stockDate()
-stockYesterday()
+        for data in range(int(userdata['count'])):
+            vol = numerize.numerize(results[data]['v'])    
+            prnVol += f"\t{vol}"  
+            prnOpen += f"\t{results[data]['o']}"
+            prnClose += f"\t{results[data]['c']}"
+            prnHigh += f"\t{results[data]['h']}"
+            prnLow += f"\t{results[data]['l']}"
+
+
+        print()
+        print("Yesterday")
+        print("-----------------------------")
+        print(prnVol)
+        print(prnOpen)
+        print(prnClose)
+        print(prnHigh)
+        print(prnLow)
+        print()
+        print(queryURL)
+        print()
+    except:
+        print()
+        print("An error occured - 2")
+        print()
+        print(queryURL)
+        print(response.text)
+        print()
+        
+
+
+ticker = stockDate()
+stockYesterday(ticker)
