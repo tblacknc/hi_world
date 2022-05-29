@@ -46,12 +46,15 @@ for c in reversed(data):
     print(f"cloudcover\t{WeatherLocators.CLOUDCOVER[int(cc)]}")
     vis = c.find('seeing').text
     print(f"Visibility\t{WeatherLocators.SEEING[int(vis)]}[km]")
-    print(f"Humidity\t{c.find('rh2m').text}")
+    hum = c.find('rh2m').text
+    print(f"Humidity\t{WeatherLocators.RH[int(hum)]}")
+    
     print(f"Wind Dir\t{c.find('wind10m_direction').text}")
     ws = int(c.find('wind10m_speed').text)
     wsm = ws / 1.609
     wsm = "{:.2f}".format(wsm)
-    print(f"Wind Speed\t{ws}[km/hr] {wsm}[mi/hr]")
+    
+    print(f"Wind Speed\t{WeatherLocators.WINDSP[int(ws)]}")
     tempc = c.find('temp2m').text
     tempf = (int(tempc) * 9/5) + 32
     print(f"Temperature\t{tempc}[c] {tempf}[f]")
