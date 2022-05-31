@@ -83,6 +83,7 @@ class TestStringMethods(unittest.TestCase):
         
         txt = self.driver.find_element(*MainPageLocators.LOGIN_TXT)    
     
+    
     def test_menu2(self):
     
         print(
@@ -93,8 +94,9 @@ class TestStringMethods(unittest.TestCase):
         '''
         )
     
+        
         self.login()
-        # not the best way to do  it but wanted to play with below
+        
         lnk = self.driver.find_element(*MainPageLocators.MENU_TWO_TOP)
         lnk.click()
 
