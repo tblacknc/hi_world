@@ -11,7 +11,12 @@ from locators import WeatherLocators
 # uses the lat/long do get the 3 day forcast
 ############################################
 
-ip_address = '96.120.72.181'
+
+url = 'https://api.ipify.org/?format=xml'
+
+response = requests.get(url)
+
+ip_address = response.text
 
 url = 'http://ip-api.com/xml/'
 url += ip_address
