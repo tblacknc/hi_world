@@ -25,7 +25,7 @@ class TestStringMethods(unittest.TestCase):
     def setUp(self):
     
         PATH = "C:\Program Files (x86)\chromedriver.exe"
-        #PATH = "C:\Users\tblac\Desktop\work search\amazon\selenium\drivers\chromedriver.exe"  
+ 
         self.driver = webdriver.Chrome(PATH)
         #self.driver = webdriver.Firefox(executable_path=r'C:\Program Files (x86)\geckodriver.exe')
 
