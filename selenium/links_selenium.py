@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import re 
@@ -22,6 +25,11 @@ def setUp(url, app):
         PATH = "C:\Program Files (x86)\geckodriver.exe"
         driver = webdriver.Firefox(executable_path=r'C:\Program Files (x86)\geckodriver.exe')
         #driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+    elif app == 'Edge':
+        PATH = "C:\Program Files (x86)\msedgedriver.exe"
+        driver = webdriver.Edge(executable_path=r'C:\Program Files (x86)\msedgedriver.exe')
+    
+    
     else:
         print(f"Unknown application passed {app}")
     
@@ -92,7 +100,7 @@ def cleanUp():
     driver.close()
 
 setUpFile()
-setUp('http://cnn.com', 'Chrome')
+setUp('http://cnn.com', 'Edge')
 getCNN()
-setUp('http://foxnews.com', 'Firefox')
+setUp('http://foxnews.com', 'Edge')
 getFox()
