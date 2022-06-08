@@ -4,10 +4,10 @@ class ScrapeLocators(object):
 
     PAGES = ['http://cnn.com', 'http://foxnews.com', 'http://msnbc.com',
              'http://nyt.com', 'http://routers.com', 'https://news.google.com/', 'https://www.nationalreview.com/', 
-             'https://techcrunch.com/', 'https://www.wired.com/', 'https://mashable.com/tech', 'https://thenextweb.com/', 'https://www.rollingstone.com/', 'https://www.billboard.com/c/music/', 'https://pitchfork.com/news/', 'http://wired.com/']
+             'https://techcrunch.com/', 'https://www.wired.com/', 'https://thenextweb.com/', 'https://www.rollingstone.com/', 'https://www.billboard.com/c/music/', 'https://pitchfork.com/news/', 'http://wired.com/']
 
     PAGES_TXT =['CNN', 'Fox News', 'MSNBC', 'New York Times', 'Routers', 
-                'Google', 'National Review', 'Tech Crunch', 'wired', 'mashable',
+                'Google', 'National Review', 'Tech Crunch', 'wired', 
                 'The Next Web', 'Rolling Stone', 'BillBoard', 'Pitchfork', 'Wired']
     
     XPATHS = ["//*[@id='homepage1-zone-1']",
@@ -19,12 +19,11 @@ class ScrapeLocators(object):
               "//*[@id='main']/section[1]/div[1]",
               "//*[@id='tc-main-content']/div[3]/div/div",
               "//*[@id='main-content']/div[1]/div[2]/div/div[2]",
-              "/html/body/div[1]/div[3]/div[2]",
               "//*[@id='nextHome']/section[1]/div/div/div",
               "//*[@id='site_wrap']/div[2]/div[1]/div[1]/section",
-              "//*[@id='main-wrapper']/main/div[2]/div/div[2]/div[2]/div[1]/div/ul", 
+              "//*[@id='main-wrapper']/main/div[2]/div/div[2]/div[1]/section/div[2]", 
               "//*[@id='news-page']/div[1]/section",
-              "//*[@id='main-content']/div[1]/div[1]/section/div[2]"]
+              "//*[@id='main-content']/div[1]/div[1]/section/div[3]/div"]
 
               
     HEADER = '''
