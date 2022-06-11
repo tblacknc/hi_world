@@ -4,12 +4,44 @@ import requests
 import json
 from numerize import numerize
 from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
+import re
+
 
 #############################################
-# determins location from IP address then
-# uses the ip address do get the 3 day forcast
+# determins location from IP address,
+# uses the ip address do get the forcast
+# then plots the Temp, Relative Humidity & 
+# feels like temperature
 ############################################
 
+def graphtemp(x,y1,y2,y3):
+    y2.reverse()
+    y1.reverse()
+    x.reverse()
+
+    plt.subplot(3, 1, 1)
+    plt.plot(x, y1)
+    plt.ylabel('Temp F')
+    plt.gca().axes.get_xaxis().set_visible(False)
+    
+    plt.subplot(3, 1, 2)
+    plt.plot(x, y2)
+    plt.ylabel('Humidity')
+    plt.gca().axes.get_xaxis().set_visible(False)
+    
+    plt.subplot(3, 1, 3)
+    plt.plot(x, y3)
+    plt.ylabel('Feels Like F')
+
+    plt.show()
+
+
+loop = 0
+graphx = []
+graphyh = []
+graphyt = []
+graphyhi = []
 
 url = 'https://api.ipify.org/?format=xml'
 
@@ -22,7 +54,7 @@ url = "http://api.weatherapi.com/v1/forecast.json?"
 
 queryURL = url + f"key=5bfef5467dd54a41a8a113336222805"
 queryURL += f"&q={ip_address}"
-queryURL += f"&days=3"
+queryURL += f"&days=1"
 queryURL += f"&aqi=no"
 queryURL += f"&alerts=no"
 
@@ -45,6 +77,17 @@ try:
             print(f"Precipitation\t{dat['precip_in']} inch")
             print(f"Humidity\t{dat['humidity']} %")
             print(f"Cloud Cover\t{dat['cloud']} %")
+            loop += 1
+            m = re.search('(?<= )[0-9]+', dat['time'])
+            m.group(0)
+            
+            graphx.append(m.group(0))
+            graphyt.append(dat['temp_f'])
+            graphyh.append(dat['humidity'])
+            
+            heatIndex = -42.38 + 2.049 * dat['temp_f'] + 10.14 * dat['humidity'] + -0.2248* dat['temp_f'] * dat['humidity'] +  -0.006838 * dat['temp_f']**2 + -0.05482 * dat['humidity']**2 + 0.001228 * dat['temp_f']**2 * dat['humidity'] + 0.0008528 * dat['temp_f'] * dat['humidity']**2 + -0.00000199 * dat['temp_f']**2 * dat['humidity']**2
+            
+            graphyhi.append(heatIndex)
 
     print(f"")
     print(f"Current Conditions")
@@ -73,6 +116,8 @@ try:
     print(f"{userdata['location']['tz_id']}")
     print()
     print(f"{queryURL}")
+
+    graphtemp(graphx,graphyt,graphyh,graphyhi)
 
 except Exception as e: 
     print(e)
