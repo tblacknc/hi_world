@@ -1,10 +1,13 @@
 #!/usr/bin/env python
+from xml.etree.ElementTree import Element
 
 import requests
 from xml.etree import ElementTree
 import re
 from datetime import datetime, timedelta
 from locators import WeatherLocators
+import mysql.connector
+from datetime import datetime
 
 #############################################
 # determins location from IP address then
@@ -33,11 +36,16 @@ dom = ElementTree.fromstring(response.text)
 
 datas = dom.findall('forecast/forecastday')
 
+print("Content-type:text/html\r\n\r\n")
+print('<html>')
+print('<head>')
 try:
 
     for data in datas:
         ds = data.findall('hour')
-        for dat in  reversed(ds):
+        #ds = data.findall('hour')
+        dat: Element
+        for dat in reversed(ds):
             print("")
             time = dat.find('time').text
             print(f"{time}")
@@ -55,7 +63,7 @@ try:
             print(f"Wind Direction\t{wind_dir}")
             precip_in = dat.find('precip_in').text
             print(f"Precipitation\t{precip_in} inch")
-            humidity = (dat.find('humidity').text)
+            humidity = dat.find('humidity').text
             print(f"Humidity\t{humidity} %")
             cloud = dat.find('cloud').text
             print(f"Cloud Cover\t{cloud} %")
