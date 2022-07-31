@@ -2,7 +2,9 @@
 
 def sortit(array):
     a = 0
+    #a = 0
     temp = 0
+    temp2 = 0
     l1 = 0
     for a in array:
         # a = number being compared
@@ -15,6 +17,6 @@ def sortit(array):
             l1 += 1  
     return array   
             
-print(sortit([1,3, 5, 2]))
+print(sortit([1,3, 5, 2, b, 1,  2]))
 print(sortit([1,3,5,3,1,3,5,3,6,8,5,9,3,5,3,1,3,5,3,6,8,3,5,3,1,3,5,3,6,8,5,9,3,5,3,1,3,5,3,6,8,5,9]))
 
