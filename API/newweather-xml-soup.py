@@ -57,7 +57,6 @@ print(f"-------------------------------")
 
 curr = soup.find_all("current")
 
-# curr = dom.findall('current')
 for c in curr:
     last_updated = c.find('last_updated').text
     print(f"Last Updated\t{last_updated}")
