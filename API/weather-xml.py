@@ -49,7 +49,7 @@ for c in reversed(data):
 
     print()
     time = c.get('timepoint')
-    time = re.sub("h", "", time)
+    time = str.replace("h", "", time)
     d = datetime.now() + timedelta(hours=int(time))
     date = d.strftime("%Y-%m-%d %H:%M")
     print(f"Date\t\t{date}")
