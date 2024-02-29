@@ -52,13 +52,13 @@ ip_address = response.text
 
 url = "http://api.weatherapi.com/v1/forecast.json?"
 
-queryURL = url + f"key=5bfef5467dd54a41a8a113336222805"
-queryURL += f"&q={ip_address}"
-queryURL += f"&days=1"
-queryURL += f"&aqi=no"
-queryURL += f"&alerts=no"
+queryurl = url + f"key=5bfef5467dd54a41a8a113336222805"
+queryurl += f"&q={ip_address}"
+queryurl += f"&days=1"
+queryurl += f"&aqi=no"
+queryurl += f"&alerts=no"
 
-response = requests.get(queryURL)
+response = requests.get(queryurl)
 
 userdata = json.loads(response.text)
 try:
