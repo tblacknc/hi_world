@@ -19,12 +19,12 @@ def stockDate():
 
     ticker = ticker.upper()
 
-    queryURL = url + f"{ticker}/"
-    queryURL += f"{date}"
-    queryURL += f"?adjusted=true"
-    queryURL += f"&apiKey={key}"
+    queryurl = url + f"{ticker}/"
+    queryurl += f"{date}"
+    queryurl += f"?adjusted=true"
+    queryurl += f"&apiKey={key}"
      
-    response = requests.get(queryURL)
+    response = requests.get(queryurl)
     
     userdata = json.loads(response.text)
     try:
@@ -38,14 +38,14 @@ def stockDate():
         print(f"After Hours\t{userdata['afterHours']}")
         print()
   
-        print(queryURL)
+        print(queryurl)
         print()
 
     except:
         print()
         print("An error occured - 1")
         print()
-        print(queryURL)
+        print(queryurl)
         print(response.text)
         print()
     return ticker
@@ -54,14 +54,14 @@ def stockYesterday(ticker):
 
     url = "https://api.polygon.io/v2/aggs/ticker/"
     
-    ticker = ticker
+    //ticker = ticker
     key = "s2_m3Ptpdhop0_1IHLI6OuRQiKUmxZBZ"
 
-    queryURL = url + f"{ticker}"
-    queryURL += f"/prev?adjusted=true"
-    queryURL += f"&apiKey={key}"
+    queryurl = url + f"{ticker}"
+    queryurl += f"/prev?adjusted=true"
+    queryurl += f"&apiKey={key}"
      
-    response = requests.get(queryURL)
+    response = requests.get(queryurl)
     userdata = json.loads(response.text)
     try:
         results = userdata["results"]
@@ -91,13 +91,13 @@ def stockYesterday(ticker):
         print(prnHigh)
         print(prnLow)
         print()
-        print(queryURL)
+        print(queryurl)
         print()
     except:
         print()
         print("An error occured - 2")
         print()
-        print(queryURL)
+        print(queryurl)
         print(response.text)
         print()
         
